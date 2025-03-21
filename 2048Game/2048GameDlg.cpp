@@ -190,6 +190,16 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
     CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
+BOOL C2048GameDlg::PreTranslateMessage(MSG* pMsg)
+{
+    if (pMsg->message == WM_KEYDOWN)
+    {
+        OnKeyDown(pMsg->wParam, 0, 0);
+        return TRUE;  // 방향키 이벤트 처리했음
+    }
+    return CDialogEx::PreTranslateMessage(pMsg);
+}
+
 void C2048GameDlg::OnBnClickedButtonNewGame()
 {
     game.resetGame();

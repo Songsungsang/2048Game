@@ -23,6 +23,7 @@ public:
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);
     virtual BOOL OnInitDialog();
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnPaint();
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnBnClickedButtonNewGame();
