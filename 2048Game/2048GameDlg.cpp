@@ -186,7 +186,7 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         // 게임 승리 또는 게임 오버 확인
         if (game.isWin())
         {
-            MessageBox(_T("축하합니다! 2048을 달성했습니다!"), _T("승리"), MB_OK | MB_ICONINFORMATION);
+            MessageBox(_T("축하합니다! 2048을 달성했습니다!\n게임을 계속 진행하시겠습니까?"), _T("승리"), MB_OK | MB_ICONINFORMATION);
         }
         else if (game.isGameOver())
         {
