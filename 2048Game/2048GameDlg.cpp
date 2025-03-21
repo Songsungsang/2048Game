@@ -37,6 +37,7 @@ void C2048GameDlg::DoDataExchange(CDataExchange* pDX)
     CDialogEx::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_STATIC_SCORE, m_ScoreStatic);
     DDX_Control(pDX, IDC_BUTTON_NEW_GAME, m_NewGameButton);
+    DDX_Control(pDX, IDC_STATIC_HIGHSCORE, m_HighScoreStatic);
 }
 
 BOOL C2048GameDlg::OnInitDialog()
@@ -176,6 +177,12 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         UpdateScore();
         Invalidate();
 
+        if (game.getScore() > HighScore) // 최고 점수 체크 및 갱신
+        {
+            HighScore = game.getScore();
+            UpdateHighScore();
+        }
+
         // 게임 승리 또는 게임 오버 확인
         if (game.isWin())
         {
@@ -212,6 +219,13 @@ void C2048GameDlg::UpdateScore()
     CString strScore;
     strScore.Format(_T("점수: %d"), game.getScore());
     m_ScoreStatic.SetWindowText(strScore);
+}
+
+void C2048GameDlg::UpdateHighScore()
+{
+    CString strHigh;
+    strHigh.Format(_T("최고 점수: %d"), HighScore);
+    m_HighScoreStatic.SetWindowText(strHigh);
 }
 
 COLORREF C2048GameDlg::GetTileColor(int value)

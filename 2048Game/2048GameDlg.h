@@ -15,6 +15,7 @@ private:
     CFont tileFont;
     CFont scoreFont;
     COLORREF tileColors[12];
+    int HighScore = 0;
 
 public:
     C2048GameDlg(CWnd* pParent = nullptr);
@@ -31,8 +32,10 @@ protected:
 
 private:
     CStatic m_ScoreStatic;
+    CStatic m_HighScoreStatic;
     CButton m_NewGameButton;
     COLORREF GetTileColor(int value);
     void DrawTile(CDC* pDC, int row, int col);
     void UpdateScore();
+    void UpdateHighScore();
 };
