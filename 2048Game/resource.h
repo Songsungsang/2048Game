@@ -10,7 +10,7 @@
 #define g                               1000
 #define IDC_STATIC_SCORE                1001
 #define IDC_BUTTON_NEW_GAME             1002
-
+#define IDC_STATIC_HIGHSCORE            1003
 
 // Next default values for new objects
 // 
