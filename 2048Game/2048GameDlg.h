@@ -15,6 +15,7 @@ private:
     CFont tileFont;
     CFont scoreFont;
     COLORREF tileColors[12];
+    CComboBox m_SizeComboBox;  // 사이즈 선택 콤보박스
     int HighScore = 0;
 
 public:
@@ -28,6 +29,7 @@ protected:
     afx_msg void OnPaint();
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnBnClickedButtonNewGame();
+    afx_msg void OnCbnSelchangeComboSize();
     DECLARE_MESSAGE_MAP()
 
 private:
@@ -37,5 +39,5 @@ private:
     COLORREF GetTileColor(int value);
     void DrawTile(CDC* pDC, int row, int col);
     void UpdateScore();
-    void UpdateHighScore();
+    void UpdateHighScore(); 
 };

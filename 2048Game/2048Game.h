@@ -1,4 +1,7 @@
-﻿#pragma once
+﻿// 2048GameDlg.h: 헤더 파일
+//
+
+#pragma once
 #include <vector>
 #include <random>
 #include <algorithm>
@@ -16,7 +19,7 @@ private:
 public:
     enum Direction { UP, DOWN, LEFT, RIGHT };
 
-    Game2048(int boardSize = 4) : size(boardSize), score(0), gameOver(false), gen(rd())
+    Game2048(int boardSize = 7) : size(boardSize), score(0), gameOver(false), gen(rd())
     {
         board.resize(size, std::vector<int>(size, 0));
         // 게임 시작 시 무작위로 두 개의 타일 생성
@@ -35,6 +38,20 @@ public:
         gameOver = false;
         addRandomTile();
         addRandomTile();
+    }
+
+    // 게임 보드 크기 변경
+    void changeBoardSize(int newSize)
+    {
+        size = newSize;
+        board.resize(size, std::vector<int>(size, 0));
+        resetGame();
+    }
+
+    // 보드 크기 얻기
+    int getBoardSize() const
+    {
+        return size;
     }
 
     // 무작위 위치에 2 또는 4 타일 추가

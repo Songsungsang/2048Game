@@ -12,6 +12,7 @@ BEGIN_MESSAGE_MAP(C2048GameDlg, CDialogEx)
     ON_WM_PAINT()
     ON_WM_KEYDOWN()
     ON_BN_CLICKED(IDC_BUTTON_NEW_GAME, &C2048GameDlg::OnBnClickedButtonNewGame)
+    ON_CBN_SELCHANGE(IDC_COMBO_SIZE, &C2048GameDlg::OnCbnSelchangeComboSize)
 END_MESSAGE_MAP()
 
 C2048GameDlg::C2048GameDlg(CWnd* pParent)
@@ -38,6 +39,7 @@ void C2048GameDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_STATIC_SCORE, m_ScoreStatic);
     DDX_Control(pDX, IDC_BUTTON_NEW_GAME, m_NewGameButton);
     DDX_Control(pDX, IDC_STATIC_HIGHSCORE, m_HighScoreStatic);
+    DDX_Control(pDX, IDC_COMBO_SIZE, m_SizeComboBox);
 }
 
 BOOL C2048GameDlg::OnInitDialog()
@@ -45,10 +47,10 @@ BOOL C2048GameDlg::OnInitDialog()
     CDialogEx::OnInitDialog();
 
     // 대화 상자 크기 설정
-    SetWindowPos(NULL, 0, 0, 500, 600, SWP_NOMOVE | SWP_NOZORDER);
+    SetWindowPos(NULL, 0, 0, 600, 700, SWP_NOMOVE | SWP_NOZORDER);
 
     // 그리드 영역 설정
-    gridRect.SetRect(50, 100, 450, 500);
+    gridRect.SetRect(45, 100, 550, 600);
 
     // 타일 폰트 설정
     tileFont.CreateFont(24, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET,
@@ -63,10 +65,33 @@ BOOL C2048GameDlg::OnInitDialog()
     // 키보드 포커스 설정
     SetFocus();
 
+    // 게임 모드 콤보박스 초기화
+    m_SizeComboBox.AddString(_T("3x3"));
+    m_SizeComboBox.AddString(_T("4x4"));
+    m_SizeComboBox.AddString(_T("5x5"));
+    m_SizeComboBox.AddString(_T("7x7"));
+    m_SizeComboBox.SetCurSel(1);  // 기본값 4x4 선택
+
     // 점수 초기화
     UpdateScore();
 
+    //[추가] 기본 선택된 콤보박스 사이즈로 보드 사이즈 맞추기
+    int index = m_SizeComboBox.GetCurSel();
+    int newSize = index + 3;
+    game.changeBoardSize(newSize);
+
     return TRUE;
+}
+
+// 콤보박스 변경 핸들러 함수 추가:
+void C2048GameDlg::OnCbnSelchangeComboSize()
+{
+    int index = m_SizeComboBox.GetCurSel();
+    int newSize = index + 3;  // 인덱스 0은 3x3, 1은 4x4, 2는 5x5
+
+    game.changeBoardSize(newSize);
+    UpdateScore();
+    Invalidate();  // 화면 갱신
 }
 
 void C2048GameDlg::OnPaint()
@@ -88,9 +113,10 @@ void C2048GameDlg::OnPaint()
     memDC.FillSolidRect(gridRect, RGB(187, 173, 160));
 
     // 타일 그리기
-    for (int i = 0; i < 4; i++)
+    int boardSize = game.getBoardSize();
+    for (int i = 0; i < boardSize; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < boardSize; j++)
         {
             DrawTile(&memDC, i, j);
         }
@@ -107,7 +133,8 @@ void C2048GameDlg::OnPaint()
 
 void C2048GameDlg::DrawTile(CDC* pDC, int row, int col)
 {
-    int tileSize = (gridRect.Width() - 50) / 4;
+    int boardSize = game.getBoardSize();
+    int tileSize = (gridRect.Width() - (boardSize + 1) * 10) / boardSize;
     int spacing = 10;
 
     int left = gridRect.left + col * (tileSize + spacing) + spacing;
@@ -133,6 +160,13 @@ void C2048GameDlg::DrawTile(CDC* pDC, int row, int col)
     // 타일 값이 있으면 표시
     if (value > 0)
     {
+        // 타일 크기에 따라 폰트 크기 조정
+        CFont tileFont;
+        int fontSize = tileSize / 3;
+        tileFont.CreateFont(fontSize, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+            DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+
         CFont* pOldFont = pDC->SelectObject(&tileFont);
         pDC->SetBkMode(TRANSPARENT);
 
@@ -149,6 +183,7 @@ void C2048GameDlg::DrawTile(CDC* pDC, int row, int col)
         pDC->DrawText(strValue, tileRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
         pDC->SelectObject(pOldFont);
+        tileFont.DeleteObject();
     }
 }
 
