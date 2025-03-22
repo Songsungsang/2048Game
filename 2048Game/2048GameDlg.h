@@ -16,7 +16,6 @@ private:
     CFont scoreFont;
     COLORREF tileColors[12];
     CComboBox m_SizeComboBox;  // 사이즈 선택 콤보박스
-    int HighScore = 0;
 
 public:
     C2048GameDlg(CWnd* pParent = nullptr);

@@ -212,16 +212,25 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         UpdateScore();
         Invalidate();
 
-        if (game.getScore() > HighScore) // 최고 점수 체크 및 갱신
+        if (game.getScore() > game.getHighScore()) // 최고 점수 체크 및 갱신
         {
-            HighScore = game.getScore();
+            game.setHighScore(game.getScore());
             UpdateHighScore();
         }
 
         // 게임 승리 또는 게임 오버 확인
         if (game.isWin())
         {
-            MessageBox(_T("축하합니다! 2048을 달성했습니다!\n게임을 계속 진행하시겠습니까?"), _T("승리"), MB_OK | MB_ICONINFORMATION);
+            int result = MessageBox(_T("축하합니다! 2048을 달성했습니다!\n게임을 계속 진행하시겠습니까?"), _T("승리"), MB_YESNO | MB_ICONQUESTION);
+            if (result == IDYES)
+            {
+                game.setInfinite(true);  // 무한 모드 활성화
+            }
+            if (result == IDNO) 
+            {
+                MessageBox(_T("다음 게임을 준비합니다."), _T("게임 재시작"), MB_OK | MB_ICONINFORMATION);
+                OnBnClickedButtonNewGame(); // 새 게임 시작
+            }
         }
         else if (game.isGameOver())
         {
@@ -259,7 +268,7 @@ void C2048GameDlg::UpdateScore()
 void C2048GameDlg::UpdateHighScore()
 {
     CString strHigh;
-    strHigh.Format(_T("최고 점수: %d"), HighScore);
+    strHigh.Format(_T("최고 점수: %d"), game.getHighScore());
     m_HighScoreStatic.SetWindowText(strHigh);
 }
 
