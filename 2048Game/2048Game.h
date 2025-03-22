@@ -47,8 +47,12 @@ public:
     void changeBoardSize(int newSize)
     {
         size = newSize;
+        board.clear();  //완전히 초기화
         board.resize(size, std::vector<int>(size, 0));
-        resetGame();
+        score = 0;
+        gameOver = false;
+        addRandomTile();
+        addRandomTile();
     }
 
     // 보드 크기 얻기
@@ -298,7 +302,7 @@ public:
 
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
-                if (board[i][j] >= 2048)
+                if (board[i][j] >= 16)
                     return true;
         return false;
     }
