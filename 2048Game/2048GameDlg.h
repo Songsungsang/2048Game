@@ -15,7 +15,6 @@ private:
     CFont tileFont;
     CFont scoreFont;
     COLORREF tileColors[12];
-    int HighScore = 0;
 
 public:
     C2048GameDlg(CWnd* pParent = nullptr);

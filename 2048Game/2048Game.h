@@ -8,8 +8,10 @@ class Game2048
 private:
     std::vector<std::vector<int>> board;
     int score;
+    int highScore = 0;
     int size;
     bool gameOver;
+    bool infinite = false;
     std::random_device rd;
     std::mt19937 gen;
 
@@ -33,6 +35,7 @@ public:
 
         score = 0;
         gameOver = false;
+        infinite = false;
         addRandomTile();
         addRandomTile();
     }
@@ -247,6 +250,24 @@ public:
         return score;
     }
 
+    // 점수 얻기
+    int getHighScore() const
+    {
+        return highScore;
+    }
+
+    // 무한모드 설정
+    void setHighScore(int s)
+    {
+        highScore = s;
+    }
+
+    // 무한모드 설정
+    void setInfinite(bool i)
+    {
+        infinite = i;
+    }
+
     // 게임 오버 상태 확인
     bool isGameOver() const
     {
@@ -255,7 +276,9 @@ public:
 
     // 게임 승리 확인 (2048 타일 존재 여부)
     bool isWin() const
-    {
+    {   
+        if (infinite == true) return false; // 무한모드 활성화시 승리조건 확인 무시
+
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
                 if (board[i][j] >= 2048)
