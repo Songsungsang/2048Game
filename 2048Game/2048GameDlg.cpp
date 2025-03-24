@@ -200,24 +200,34 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
     bool moved = false;
 
-    // 이동 전 현재 상태 저장
-    game.saveState();
+    //// 이동 전 현재 상태 저장
+    //game.saveState();
+
+    // 이동 방향 결정
+    Game2048::Direction direction;
 
     switch (nChar)
     {
     case VK_UP:
-        moved = game.moveTiles(Game2048::UP);
+        direction = Game2048::UP;
         break;
     case VK_DOWN:
-        moved = game.moveTiles(Game2048::DOWN);
+        direction = Game2048::DOWN;
         break;
     case VK_LEFT:
-        moved = game.moveTiles(Game2048::LEFT);
+        direction = Game2048::LEFT;
         break;
     case VK_RIGHT:
-        moved = game.moveTiles(Game2048::RIGHT);
+        direction = Game2048::RIGHT;
         break;
+    default:
+        CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
+        return;
     }
+
+    // 실제 이동하기 전에 상태 저장
+    game.saveState();
+    moved = game.moveTiles(direction);
 
     if (moved)
     {
@@ -251,9 +261,9 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
     }
     else 
     {
-		game.undoMove();  // 이동 실패 시 이전 상태로 되돌리기
-		game.plusRemainingUndos();  // 되돌리기 횟수 추가
-		UpdateUndoCount();  // 되돌리기 횟수 업데이트
+		//game.undoMove();  // 이동 실패 시 이전 상태로 되돌리기
+		//game.plusRemainingUndos();  // 되돌리기 횟수 추가
+		//UpdateUndoCount();  // 되돌리기 횟수 업데이트
     }
     CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
 }
