@@ -12,6 +12,8 @@
 #define IDC_BUTTON_NEW_GAME             1002
 #define IDC_STATIC_HIGHSCORE            1003
 #define IDC_COMBO_SIZE                  1004
+#define IDC_STATIC_UNDO_COUNT           1005
+#define IDC_BUTTON_UNDO                 1006
 
 // Next default values for new objects
 // 
@@ -19,7 +21,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1005
+#define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

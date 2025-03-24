@@ -13,6 +13,8 @@ BEGIN_MESSAGE_MAP(C2048GameDlg, CDialogEx)
     ON_WM_KEYDOWN()
     ON_BN_CLICKED(IDC_BUTTON_NEW_GAME, &C2048GameDlg::OnBnClickedButtonNewGame)
     ON_CBN_SELCHANGE(IDC_COMBO_SIZE, &C2048GameDlg::OnCbnSelchangeComboSize)
+    ON_BN_CLICKED(IDC_BUTTON_UNDO, &C2048GameDlg::OnBnClickedButtonUndo)  // 되돌리기 버튼 이벤트 추가
+    ON_STN_CLICKED(IDC_STATIC_UNDO_COUNT, &C2048GameDlg::OnStnClickedStaticUndoCount)
 END_MESSAGE_MAP()
 
 C2048GameDlg::C2048GameDlg(CWnd* pParent)
@@ -40,6 +42,8 @@ void C2048GameDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_BUTTON_NEW_GAME, m_NewGameButton);
     DDX_Control(pDX, IDC_STATIC_HIGHSCORE, m_HighScoreStatic);
     DDX_Control(pDX, IDC_COMBO_SIZE, m_SizeComboBox);
+    DDX_Control(pDX, IDC_BUTTON_UNDO, m_UndoButton);  // 되돌리기 버튼 컨트롤 추가
+    DDX_Control(pDX, IDC_STATIC_UNDO_COUNT, m_UndoCountStatic);  // 되돌리기 횟수 스태틱 컨트롤 추가
 }
 
 BOOL C2048GameDlg::OnInitDialog()
@@ -80,6 +84,9 @@ BOOL C2048GameDlg::OnInitDialog()
     int newSize = index + 3;
     game.changeBoardSize(newSize);
 
+    // 되돌리기 횟수 초기화 및 표시
+    UpdateUndoCount();
+
     return TRUE;
 }
 
@@ -90,7 +97,9 @@ void C2048GameDlg::OnCbnSelchangeComboSize()
     int newSize = index + 3;  // 인덱스 0은 3x3, 1은 4x4, 2는 5x5
 
     game.changeBoardSize(newSize);
+    game.resetUndoCount();  // 사이즈 변경 시 되돌리기 횟수 초기화
     UpdateScore();
+    UpdateUndoCount();  // 되돌리기 횟수 업데이트
     Invalidate();  // 화면 갱신
 }
 
@@ -191,6 +200,9 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
     bool moved = false;
 
+    // 이동 전 현재 상태 저장
+    game.saveState();
+
     switch (nChar)
     {
     case VK_UP:
@@ -210,6 +222,7 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
     if (moved)
     {
         UpdateScore();
+        UpdateUndoCount();  // 되돌리기 횟수 업데이트
         Invalidate();
 
         if (game.getScore() > game.getHighScore()) // 최고 점수 체크 및 갱신
@@ -237,6 +250,13 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
             MessageBox(_T("게임 오버! 더 이상 이동할 수 없습니다."), _T("게임 오버"), MB_OK | MB_ICONINFORMATION);
         }
     }
+    else
+    {
+        // 이동이 없었으면 저장한 상태 제거
+        game.undoMove();
+        game.resetUndoCount();
+        UpdateUndoCount();
+    }
 
     CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -254,7 +274,9 @@ BOOL C2048GameDlg::PreTranslateMessage(MSG* pMsg)
 void C2048GameDlg::OnBnClickedButtonNewGame()
 {
     game.resetGame();
+    game.resetUndoCount();  // 되돌리기 횟수 초기화
     UpdateScore();
+    UpdateUndoCount();  // 되돌리기 횟수 업데이트
     Invalidate();
 }
 
@@ -282,4 +304,28 @@ COLORREF C2048GameDlg::GetTileColor(int value)
         return tileColors[index];
 
     return tileColors[11]; // 4096 이상
+}
+
+void C2048GameDlg::UpdateUndoCount()
+{
+    CString strUndoCount;
+    strUndoCount.Format(_T("남은 되돌리기 횟수: %d"), game.getRemainingUndos());
+    m_UndoCountStatic.SetWindowText(strUndoCount);
+
+    // 남은 되돌리기가 없으면 버튼 비활성화
+    m_UndoButton.EnableWindow(game.getRemainingUndos() > 0);
+}
+
+void C2048GameDlg::OnBnClickedButtonUndo()
+{
+    if (game.undoMove())
+    {
+        UpdateScore();
+        UpdateUndoCount();
+        Invalidate();
+    }
+}
+void C2048GameDlg::OnStnClickedStaticUndoCount()
+{
+    // TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

@@ -18,6 +18,15 @@ private:
     std::random_device rd;
     std::mt19937 gen;
 
+    // 이전 상태를 저장하기 위한 변수들
+    struct GameState {
+        std::vector<std::vector<int>> boardState;
+        int scoreState;
+    };
+    std::vector<GameState> history;
+    int maxUndoCount = 3;
+    int remainingUndos = 3;
+
 public:
     enum Direction { UP, DOWN, LEFT, RIGHT };
 
@@ -257,7 +266,7 @@ public:
         }
 
         return moved;
-    }
+}
 
     // 게임 보드 상태 얻기
     int getTileValue(int row, int col) const
@@ -302,8 +311,48 @@ public:
 
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
-                if (board[i][j] >= 16)
+                if (board[i][j] >= 2048)
                     return true;
         return false;
     }
+
+    // 현재 상태 저장
+    void saveState() {
+        if (history.size() >= maxUndoCount) {
+            history.erase(history.begin());
+        }
+
+        GameState state;
+        state.boardState = board;
+        state.scoreState = score;
+        history.push_back(state);
+    }
+
+    // 이전 상태로 되돌리기
+    bool undoMove() {
+        if (history.empty() || remainingUndos <= 0) {
+            return false;
+        }
+
+        GameState state = history.back();
+        history.pop_back();
+
+        board = state.boardState;
+        score = state.scoreState;
+        remainingUndos--;
+
+        return true;
+    }
+
+    // 남은 되돌리기 횟수 반환
+    int getRemainingUndos() const {
+        return remainingUndos;
+    }
+
+    // 게임 리셋 시 되돌리기 횟수 초기화
+    void resetUndoCount() {
+        remainingUndos = maxUndoCount;
+        history.clear();
+    }
+
 };

@@ -16,10 +16,14 @@ private:
     CFont scoreFont;
     COLORREF tileColors[12];
     CComboBox m_SizeComboBox;  // 사이즈 선택 콤보박스
+    CButton m_UndoButton;  // 되돌리기 버튼 추가
+    CStatic m_UndoCountStatic;  // 남은 되돌리기 횟수 표시 스태틱
 
 public:
     C2048GameDlg(CWnd* pParent = nullptr);
     enum { IDD = IDD_DIALOG_2048 };
+    afx_msg void OnBnClickedButtonUndo();  // 되돌리기 버튼 핸들러 추가
+    void UpdateUndoCount();  // 되돌리기 횟수 업데이트 함수
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);
@@ -39,4 +43,6 @@ private:
     void DrawTile(CDC* pDC, int row, int col);
     void UpdateScore();
     void UpdateHighScore(); 
+public:
+    afx_msg void OnStnClickedStaticUndoCount();
 };
