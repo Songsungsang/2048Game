@@ -321,6 +321,10 @@ void C2048GameDlg::UpdateUndoCount()
 
     // 남은 되돌리기가 없으면 버튼 비활성화
     m_UndoButton.EnableWindow(game.getRemainingUndos() > 0);
+
+    if (!game.getRemainingUndos()) {
+        SetFocus();  // 다이얼로그로 포커스 이동 (키 입력을 다시 받기 위해)
+    }
 }
 
 void C2048GameDlg::OnBnClickedButtonUndo()
