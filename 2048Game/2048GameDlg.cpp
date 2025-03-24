@@ -97,7 +97,7 @@ void C2048GameDlg::OnCbnSelchangeComboSize()
     int newSize = index + 3;  // 인덱스 0은 3x3, 1은 4x4, 2는 5x5
 
     game.changeBoardSize(newSize);
-    game.resetUndoCount();  // 사이즈 변경 시 되돌리기 횟수 초기화
+    //game.resetUndoCount();  // 사이즈 변경 시 되돌리기 횟수 초기화
     UpdateScore();
     UpdateUndoCount();  // 되돌리기 횟수 업데이트
     Invalidate();  // 화면 갱신
@@ -222,7 +222,6 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
     if (moved)
     {
         UpdateScore();
-        UpdateUndoCount();  // 되돌리기 횟수 업데이트
         Invalidate();
 
         if (game.getScore() > game.getHighScore()) // 최고 점수 체크 및 갱신
@@ -250,14 +249,12 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
             MessageBox(_T("게임 오버! 더 이상 이동할 수 없습니다."), _T("게임 오버"), MB_OK | MB_ICONINFORMATION);
         }
     }
-    else
+    else 
     {
-        // 이동이 없었으면 저장한 상태 제거
-        game.undoMove();
-        game.resetUndoCount();
-        UpdateUndoCount();
+		game.undoMove();  // 이동 실패 시 이전 상태로 되돌리기
+		game.plusRemainingUndos();  // 되돌리기 횟수 추가
+		UpdateUndoCount();  // 되돌리기 횟수 업데이트
     }
-
     CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
@@ -274,7 +271,7 @@ BOOL C2048GameDlg::PreTranslateMessage(MSG* pMsg)
 void C2048GameDlg::OnBnClickedButtonNewGame()
 {
     game.resetGame();
-    game.resetUndoCount();  // 되돌리기 횟수 초기화
+    //game.resetUndoCount();  // 되돌리기 횟수 초기화
     UpdateScore();
     UpdateUndoCount();  // 되돌리기 횟수 업데이트
     Invalidate();

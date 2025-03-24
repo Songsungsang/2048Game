@@ -26,7 +26,7 @@ private:
     };
     std::vector<GameState> history;
     int maxUndoCount = 3;
-    int remainingUndos = 3;
+    int remainingUndos = maxUndoCount;
 
 public:
     enum Direction { UP, DOWN, LEFT, RIGHT };
@@ -49,6 +49,9 @@ public:
         score = 0;
         gameOver = false;
         infinite = false;
+		remainingUndos = maxUndoCount;
+        history.clear();
+
         addRandomTile();
         addRandomTile();
     }
@@ -61,6 +64,10 @@ public:
         board.resize(size, std::vector<int>(size, 0));
         score = 0;
         gameOver = false;
+        infinite = false;
+        remainingUndos = maxUndoCount;
+        history.clear();
+
         addRandomTile();
         addRandomTile();
     }
@@ -352,10 +359,14 @@ public:
         return remainingUndos;
     }
 
-    // 게임 리셋 시 되돌리기 횟수 초기화
-    void resetUndoCount() {
-        remainingUndos = maxUndoCount;
-        history.clear();
+    void plusRemainingUndos() {
+        remainingUndos++;
     }
+
+    //// 게임 리셋 시 되돌리기 횟수 초기화
+    //void resetUndoCount() {
+    //    remainingUndos = maxUndoCount;
+    //    history.clear();
+    //}
 
 };
