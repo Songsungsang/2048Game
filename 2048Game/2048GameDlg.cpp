@@ -321,6 +321,7 @@ void C2048GameDlg::OnBnClickedButtonUndo()
     if (game.undoMove())
     {
         UpdateScore();
+        UpdateHighScore();
         UpdateUndoCount();
         Invalidate();
     }

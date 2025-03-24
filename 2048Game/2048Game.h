@@ -22,6 +22,7 @@ private:
     struct GameState {
         std::vector<std::vector<int>> boardState;
         int scoreState;
+        int highScoreState;
     };
     std::vector<GameState> history;
     int maxUndoCount = 3;
@@ -311,7 +312,7 @@ public:
 
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
-                if (board[i][j] >= 2048)
+                if (board[i][j] >= 16)
                     return true;
         return false;
     }
@@ -325,6 +326,7 @@ public:
         GameState state;
         state.boardState = board;
         state.scoreState = score;
+        state.highScoreState = highScore;
         history.push_back(state);
     }
 
@@ -339,6 +341,7 @@ public:
 
         board = state.boardState;
         score = state.scoreState;
+        highScore = state.highScoreState;
         remainingUndos--;
 
         return true;
