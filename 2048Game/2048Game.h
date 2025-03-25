@@ -2,9 +2,13 @@
 //
 
 #pragma once
+#include "pch.h"
+#include "resource.h"  // 리소스 ID를 위한 헤더
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <afxdialogex.h>  // CDialogEx 클래스를 위한 헤더
+#include "afxwinappex.h"
 
 class Game2048
 {

@@ -3,8 +3,6 @@
 //
 
 #pragma once
-#include "resource.h"
-#include "pch.h"
 #include "2048Game.h"
 
 class C2048GameDlg : public CDialogEx

@@ -3,8 +3,6 @@
 //
 
 #include "pch.h"
-#include "afxwinappex.h"
-#include "afxdialogex.h"
 #include "2048Game.h"
 #include "2048GameDlg.h"
 

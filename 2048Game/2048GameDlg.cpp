@@ -3,10 +3,7 @@
 //
 
 #include "pch.h"
-#include "2048Game.h"
 #include "2048GameDlg.h"
-#include <afxdialogex.h>  // CDialogEx 클래스를 위한 헤더
-#include "resource.h"  // 리소스 ID를 위한 헤더
 
 BEGIN_MESSAGE_MAP(C2048GameDlg, CDialogEx)
     ON_WM_PAINT()
