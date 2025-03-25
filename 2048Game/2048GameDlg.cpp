@@ -1,6 +1,5 @@
 ﻿
-// 2048GameDlg.cpp: 구현 파일
-//
+// 2048GameDlg.cpp: 화면 실행 및 게임 구현 파일
 
 #include "pch.h"
 #include "2048GameDlg.h"
