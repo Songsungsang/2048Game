@@ -20,8 +20,10 @@ public:
 CMyApp theApp;
 
 Game2048::Game2048(int boardSize)
-    : size(boardSize), score(0), highScore(0), gameOver(false), infinite(false), gen(rd()), maxUndoCount(3), remainingUndos(3)
+    : size(boardSize), score(0), highScore(0), gameOver(false),
+    infinite(false), gen(rd()), maxUndoCount(3), remainingUndos(3)
 {
+    loadHighScore();  // 저장된 최고 점수 불러오기
     board.resize(size, std::vector<int>(size, 0));
     addRandomTile();
     addRandomTile();
@@ -205,6 +207,7 @@ int Game2048::getHighScore() const {
 
 void Game2048::setHighScore(int s) {
     highScore = s;
+    saveHighScore();  // 최고 점수 갱신 시 파일에 저장
 }
 
 void Game2048::setInfinite(bool i) {
@@ -217,4 +220,39 @@ int Game2048::getRemainingUndos() const {
 
 void Game2048::plusRemainingUndos() {
     remainingUndos++;
+}
+
+void Game2048::saveHighScore() {
+    // 파일에 최고 점수 저장
+    CString filePath;
+    TCHAR szPath[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath))) {
+        PathAppend(szPath, _T("2048Game"));
+        CreateDirectory(szPath, NULL);  // 디렉토리가 없으면 생성
+
+        filePath.Format(_T("%s\\highscore.dat"), szPath);
+
+        CFile file;
+        if (file.Open(filePath, CFile::modeCreate | CFile::modeWrite)) {
+            file.Write(&highScore, sizeof(highScore));
+            file.Close();
+        }
+    }
+}
+
+void Game2048::loadHighScore() {
+    // 파일에서 최고 점수 불러오기
+    CString filePath;
+    TCHAR szPath[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath))) {
+        PathAppend(szPath, _T("2048Game"));
+
+        filePath.Format(_T("%s\\highscore.dat"), szPath);
+
+        CFile file;
+        if (file.Open(filePath, CFile::modeRead)) {
+            file.Read(&highScore, sizeof(highScore));
+            file.Close();
+        }
+    }
 }

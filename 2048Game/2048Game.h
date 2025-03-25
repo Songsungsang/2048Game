@@ -1,7 +1,9 @@
-﻿// 2048GameDlg.h: 헤더 파일
+﻿// 2048Game.h: 헤더 파일
 //
 
 #pragma once
+#pragma comment(lib, "Shell32.lib")
+#include <Shlobj.h>
 #include "pch.h"
 #include "resource.h"  // 리소스 ID를 위한 헤더
 #include <vector>
@@ -30,7 +32,8 @@ private:
     std::vector<GameState> history;
     int maxUndoCount;
     int remainingUndos;
-
+    void saveHighScore();
+    void loadHighScore();
 public:
     enum Direction { UP, DOWN, LEFT, RIGHT };
 

@@ -74,6 +74,7 @@ BOOL C2048GameDlg::OnInitDialog()
 
     // 점수 초기화
     UpdateScore();
+	UpdateHighScore();
 
     //[추가] 기본 선택된 판 사이즈로 보드 사이즈 맞추기
     int index = m_SizeComboBox.GetCurSel();
