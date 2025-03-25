@@ -14,7 +14,7 @@ BEGIN_MESSAGE_MAP(C2048GameDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_NEW_GAME, &C2048GameDlg::OnBnClickedButtonNewGame)
     ON_CBN_SELCHANGE(IDC_COMBO_SIZE, &C2048GameDlg::OnCbnSelchangeComboSize)
     ON_BN_CLICKED(IDC_BUTTON_UNDO, &C2048GameDlg::OnBnClickedButtonUndo)  // 되돌리기 버튼 이벤트 추가
-    ON_STN_CLICKED(IDC_STATIC_UNDO_COUNT, &C2048GameDlg::OnStnClickedStaticUndoCount)
+   
 END_MESSAGE_MAP()
 
 C2048GameDlg::C2048GameDlg(CWnd* pParent)
@@ -337,7 +337,4 @@ void C2048GameDlg::OnBnClickedButtonUndo()
         Invalidate();
     }
 }
-void C2048GameDlg::OnStnClickedStaticUndoCount()
-{
-    // TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-}
+
