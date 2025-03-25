@@ -33,16 +33,14 @@ protected:
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnBnClickedButtonNewGame();
     afx_msg void OnCbnSelchangeComboSize();
+    void UpdateBasic();
     DECLARE_MESSAGE_MAP()
 
 private:
     CStatic m_ScoreStatic;
     CStatic m_HighScoreStatic;
     CButton m_NewGameButton;
-    COLORREF GetTileColor(int value);
     void DrawTile(CDC* pDC, int row, int col);
     void UpdateScore();
     void UpdateHighScore(); 
-//public:
-//    afx_msg void OnStnClickedStaticUndoCount();
 };

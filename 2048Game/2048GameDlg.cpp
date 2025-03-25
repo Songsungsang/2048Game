@@ -39,11 +39,11 @@ void C2048GameDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialogEx::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_STATIC_SCORE, m_ScoreStatic);
-    DDX_Control(pDX, IDC_BUTTON_NEW_GAME, m_NewGameButton);
+    DDX_Control(pDX, IDC_BUTTON_NEW_GAME, m_NewGameButton); // 새게임
     DDX_Control(pDX, IDC_STATIC_HIGHSCORE, m_HighScoreStatic);
     DDX_Control(pDX, IDC_COMBO_SIZE, m_SizeComboBox);
     DDX_Control(pDX, IDC_BUTTON_UNDO, m_UndoButton);  // 되돌리기 버튼 컨트롤 추가
-    DDX_Control(pDX, IDC_STATIC_UNDO_COUNT, m_UndoCountStatic);  // 되돌리기 횟수 스태틱 컨트롤 추가
+    DDX_Control(pDX, IDC_STATIC_UNDO_COUNT, m_UndoCountStatic);
 }
 
 BOOL C2048GameDlg::OnInitDialog()
@@ -79,7 +79,7 @@ BOOL C2048GameDlg::OnInitDialog()
     // 점수 초기화
     UpdateScore();
 
-    //[추가] 기본 선택된 콤보박스 사이즈로 보드 사이즈 맞추기
+    //[추가] 기본 선택된 판 사이즈로 보드 사이즈 맞추기
     int index = m_SizeComboBox.GetCurSel();
     int newSize = index + 3;
     game.changeBoardSize(newSize);
@@ -90,17 +90,14 @@ BOOL C2048GameDlg::OnInitDialog()
     return TRUE;
 }
 
-// 콤보박스 변경 핸들러 함수 추가:
+// 보드 사이즈 변경 핸들러 함수 추가:
 void C2048GameDlg::OnCbnSelchangeComboSize()
 {
     int index = m_SizeComboBox.GetCurSel();
     int newSize = index + 3;  // 인덱스 0은 3x3, 1은 4x4, 2는 5x5
 
-    game.changeBoardSize(newSize);
-    //game.resetUndoCount();  // 사이즈 변경 시 되돌리기 횟수 초기화
-    UpdateScore();
-    UpdateUndoCount();  // 되돌리기 횟수 업데이트
-    Invalidate();  // 화면 갱신
+    game.changeBoardSize(newSize); // 보즈 사이즈 변경 및 초기화
+    UpdateBasic();
 }
 
 void C2048GameDlg::OnPaint()
@@ -154,7 +151,7 @@ void C2048GameDlg::DrawTile(CDC* pDC, int row, int col)
     int value = game.getTileValue(row, col);
     COLORREF tileColor = RGB(205, 193, 180); // 빈 타일 색상
 
-    if (value > 0)
+    if (value > 0) // 타일에 값이 2라도 있다면
     {
         int colorIndex = log2(value) - 1;
         if (colorIndex >= 0 && colorIndex < 11)
@@ -166,7 +163,7 @@ void C2048GameDlg::DrawTile(CDC* pDC, int row, int col)
     // 타일 배경 그리기
     pDC->FillSolidRect(tileRect, tileColor);
 
-    // 타일 값이 있으면 표시
+    // 타일을 그린 이후에 숫자를 넣기
     if (value > 0)
     {
         // 타일 크기에 따라 폰트 크기 조정
@@ -200,9 +197,6 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
     bool moved = false;
 
-    //// 이동 전 현재 상태 저장
-    //game.saveState();
-
     // 이동 방향 결정
     Game2048::Direction direction;
 
@@ -225,7 +219,7 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         return;
     }
 
-    // 실제 이동하기 전에 상태 저장
+    // 실제 이동 전 상태 저장
     game.saveState();
     moved = game.moveTiles(direction);
 
@@ -259,12 +253,7 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
             MessageBox(_T("게임 오버! 더 이상 이동할 수 없습니다."), _T("게임 오버"), MB_OK | MB_ICONINFORMATION);
         }
     }
-    else 
-    {
-		//game.undoMove();  // 이동 실패 시 이전 상태로 되돌리기
-		//game.plusRemainingUndos();  // 되돌리기 횟수 추가
-		//UpdateUndoCount();  // 되돌리기 횟수 업데이트
-    }
+
     CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
@@ -281,10 +270,7 @@ BOOL C2048GameDlg::PreTranslateMessage(MSG* pMsg)
 void C2048GameDlg::OnBnClickedButtonNewGame()
 {
     game.resetGame();
-    //game.resetUndoCount();  // 되돌리기 횟수 초기화
-    UpdateScore();
-    UpdateUndoCount();  // 되돌리기 횟수 업데이트
-    Invalidate();
+    UpdateBasic();
 }
 
 void C2048GameDlg::UpdateScore()
@@ -301,18 +287,6 @@ void C2048GameDlg::UpdateHighScore()
     m_HighScoreStatic.SetWindowText(strHigh);
 }
 
-COLORREF C2048GameDlg::GetTileColor(int value)
-{
-    if (value == 0)
-        return RGB(205, 193, 180); // 빈 타일
-
-    int index = log2(value) - 1;
-    if (index >= 0 && index < 11)
-        return tileColors[index];
-
-    return tileColors[11]; // 4096 이상
-}
-
 void C2048GameDlg::UpdateUndoCount()
 {
     CString strUndoCount;
@@ -321,7 +295,6 @@ void C2048GameDlg::UpdateUndoCount()
 
     // 남은 되돌리기가 없으면 버튼 비활성화
     m_UndoButton.EnableWindow(game.getRemainingUndos() > 0);
-
     if (!game.getRemainingUndos()) {
         SetFocus();  // 다이얼로그로 포커스 이동 (키 입력을 다시 받기 위해)
     }
@@ -331,10 +304,14 @@ void C2048GameDlg::OnBnClickedButtonUndo()
 {
     if (game.undoMove())
     {
-        UpdateScore();
+        UpdateBasic();
         UpdateHighScore();
-        UpdateUndoCount();
-        Invalidate();
     }
 }
 
+void C2048GameDlg::UpdateBasic()
+{
+    UpdateScore(); // 화면의 숫자와 카운트 초기화
+    UpdateUndoCount();
+    Invalidate();  // 화면 갱신
+}
