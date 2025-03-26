@@ -288,7 +288,7 @@ void C2048GameDlg::UpdateScore()
 void C2048GameDlg::UpdateTempHighScore()
 {
     CString strTempHigh;
-    strTempHigh.Format(_T("세션 최고 점수: %d"), game.getTempHighScore());
+    strTempHigh.Format(_T("최고 점수: %d"), game.getTempHighScore());
     m_TempHighScoreStatic.SetWindowText(strTempHigh);
 }
 
