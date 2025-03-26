@@ -228,10 +228,14 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         UpdateScore();
         Invalidate();
 
-        if (game.getScore() > game.getHighScore()) // 최고 점수 체크 및 갱신
+        if (game.getScore() > game.getTempHighScore()) // 최고 점수 체크 및 갱신
         {
-            game.setHighScore(game.getScore());
-            UpdateHighScore();
+            game.setTempHighScore(game.getScore());
+            UpdateTempHighScore();
+            if (game.getTempHighScore() > game.getHighScore()) {
+                game.setHighScore(game.getScore());
+                UpdateHighScore();
+            }
         }
 
         // 게임 승리 또는 게임 오버 확인
@@ -276,13 +280,12 @@ void C2048GameDlg::UpdateScore()
     // 현재 점수가 임시 최고 점수를 넘으면 갱신
     if (game.getScore() > m_TempHighScore) {
         m_TempHighScore = game.getScore();
-        UpdateTempHighScore();
     }
 }
 void C2048GameDlg::UpdateTempHighScore()
 {
     CString strTempHigh;
-    strTempHigh.Format(_T("세션 최고 점수: %d"), m_TempHighScore);
+    strTempHigh.Format(_T("세션 최고 점수: %d"), game.getTempHighScore());
     m_TempHighScoreStatic.SetWindowText(strTempHigh);
 }
 
@@ -324,6 +327,7 @@ void C2048GameDlg::OnBnClickedButtonUndo()
 void C2048GameDlg::UpdateBasic()
 {
     UpdateScore(); // 화면의 숫자와 카운트 초기화
+    UpdateTempHighScore();
     UpdateUndoCount();
     Invalidate();  // 화면 갱신
 }

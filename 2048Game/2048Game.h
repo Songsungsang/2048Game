@@ -17,6 +17,7 @@ private:
     std::vector<std::vector<int>> board;
     int score;
     int highScore;
+    int tempHighScore;
     int size;
     bool gameOver;
     bool infinite;
@@ -27,6 +28,7 @@ private:
         std::vector<std::vector<int>> boardState;
         int scoreState;
         int highScoreState;
+        int tempHighScoreState;
     };
 
     std::vector<GameState> history;
@@ -47,6 +49,8 @@ public:
     bool moveTiles(Direction dir);
     int getTileValue(int row, int col) const;
     int getScore() const;
+    int getTempHighScore() const;
+    void setTempHighScore(int tempScore);
     int getHighScore() const;
     void setHighScore(int s);
     void setInfinite(bool i);

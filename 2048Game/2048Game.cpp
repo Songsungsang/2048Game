@@ -163,7 +163,7 @@ void Game2048::saveState() {
     if (history.size() >= maxUndoCount) {
         history.erase(history.begin());
     }
-    history.push_back({ board, score, highScore });
+    history.push_back({ board, score, highScore, tempHighScore });
 }
 
 bool Game2048::undoMove() {
@@ -175,6 +175,7 @@ bool Game2048::undoMove() {
     board = state.boardState;
     score = state.scoreState;
     highScore = state.highScoreState;
+    tempHighScore = state.tempHighScoreState;
     remainingUndos--;
 
     return true;
@@ -199,6 +200,14 @@ int Game2048::getTileValue(int row, int col) const {
 
 int Game2048::getScore() const {
     return score;
+}
+
+int Game2048::getTempHighScore() const {
+    return tempHighScore;
+}
+
+void Game2048::setTempHighScore(int tempScore) {
+    tempHighScore = tempScore;
 }
 
 int Game2048::getHighScore() const {
