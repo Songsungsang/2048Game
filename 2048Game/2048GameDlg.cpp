@@ -316,8 +316,11 @@ void C2048GameDlg::OnBnClickedButtonUndo()
 {
     if (game.undoMove())
     {
+        // 세션 최고 점수를 이전 값으로 복원
+        m_TempHighScore = game.getScore(); // 이전 점수로 세션 최고 점수 갱신
         UpdateBasic();
         UpdateHighScore();
+        UpdateTempHighScore();  // 세션 최고 점수 업데이트 추가
     }
 }
 

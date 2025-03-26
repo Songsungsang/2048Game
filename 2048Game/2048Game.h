@@ -18,6 +18,7 @@ private:
     int score;
     int highScore;
     int size;
+    int m_TempHighScore;  // 세션 최고 점수 추적용
     bool gameOver;
     bool infinite;
     std::random_device rd;
@@ -27,6 +28,7 @@ private:
         std::vector<std::vector<int>> boardState;
         int scoreState;
         int highScoreState;
+        int tempHighScoreState;  // 세션 최고 점수 추가
     };
 
     std::vector<GameState> history;

@@ -163,7 +163,7 @@ void Game2048::saveState() {
     if (history.size() >= maxUndoCount) {
         history.erase(history.begin());
     }
-    history.push_back({ board, score, highScore });
+    history.push_back({ board, score, highScore, m_TempHighScore });  // m_TempHighScore 추가
 }
 
 bool Game2048::undoMove() {
@@ -175,6 +175,7 @@ bool Game2048::undoMove() {
     board = state.boardState;
     score = state.scoreState;
     highScore = state.highScoreState;
+    m_TempHighScore = state.tempHighScoreState;  // 세션 최고 점수 복원
     remainingUndos--;
 
     return true;
