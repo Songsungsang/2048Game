@@ -10,8 +10,6 @@ BEGIN_MESSAGE_MAP(C2048GameDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_NEW_GAME, &C2048GameDlg::OnBnClickedButtonNewGame)
     ON_CBN_SELCHANGE(IDC_COMBO_SIZE, &C2048GameDlg::OnCbnSelchangeComboSize)
     ON_BN_CLICKED(IDC_BUTTON_UNDO, &C2048GameDlg::OnBnClickedButtonUndo)  // 되돌리기 버튼 이벤트 추가
-   
-    ON_STN_CLICKED(IDC_STATIC_HIGHSCORE, &C2048GameDlg::OnStnClickedStaticHighscore)
 END_MESSAGE_MAP()
 
 C2048GameDlg::C2048GameDlg(CWnd* pParent)
@@ -86,7 +84,7 @@ BOOL C2048GameDlg::OnInitDialog()
     // 되돌리기 횟수 초기화 및 표시
     UpdateUndoCount();
 
-    m_TempHighScore = game.getHighScore();  // 시작 시 기존 최고 점수로 초기화
+    m_TempHighScore = 0;  // 세션 내 최고점수는 0부터 시작
     UpdateTempHighScore();
 
     return TRUE;
@@ -269,12 +267,6 @@ BOOL C2048GameDlg::PreTranslateMessage(MSG* pMsg)
     return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-//void C2048GameDlg::OnBnClickedButtonNewGame()
-//{
-//    game.resetGame();
-//    UpdateBasic();
-//}
-
 void C2048GameDlg::UpdateScore()
 {
     CString strScore;
@@ -296,22 +288,9 @@ void C2048GameDlg::UpdateTempHighScore()
 
 void C2048GameDlg::OnBnClickedButtonNewGame()
 {
-    // 새 게임 시작 시 세션 최고 점수 초기화
-    m_TempHighScore = 0;
-    UpdateTempHighScore();
-
     game.resetGame();
     UpdateBasic();
 }
-
-//// 대화상자가 종료될 때 (프로그램 종료 시)
-//void C2048GameDlg::OnOK()
-//{
-//    // 대화상자 종료 시 세션 최고 점수 초기화
-//    m_TempHighScore = 0;
-//
-//    CDialogEx::OnOK();
-//}
 
 void C2048GameDlg::UpdateHighScore()
 {
@@ -347,8 +326,4 @@ void C2048GameDlg::UpdateBasic()
     UpdateScore(); // 화면의 숫자와 카운트 초기화
     UpdateUndoCount();
     Invalidate();  // 화면 갱신
-}
-void C2048GameDlg::OnStnClickedStaticHighscore()
-{
-    // TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

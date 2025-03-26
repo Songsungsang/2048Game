@@ -44,6 +44,4 @@ private:
     void DrawTile(CDC* pDC, int row, int col);
     void UpdateScore();
     void UpdateHighScore(); 
-public:
-    afx_msg void OnStnClickedStaticHighscore();
 };
