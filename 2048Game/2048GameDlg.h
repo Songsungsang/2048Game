@@ -16,6 +16,9 @@ private:
     CComboBox m_SizeComboBox;  // 사이즈 선택 콤보박스
     CButton m_UndoButton;  // 되돌리기 버튼 추가
     CStatic m_UndoCountStatic;  // 남은 되돌리기 횟수 표시 스태틱
+    CStatic m_TempHighScoreStatic;  // 추가
+    int m_TempHighScore;             // 추가
+    void UpdateTempHighScore();
 
 public:
     C2048GameDlg(CWnd* pParent = nullptr);
@@ -41,4 +44,6 @@ private:
     void DrawTile(CDC* pDC, int row, int col);
     void UpdateScore();
     void UpdateHighScore(); 
+public:
+    afx_msg void OnStnClickedStaticHighscore();
 };

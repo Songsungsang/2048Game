@@ -6,6 +6,7 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_DIALOG_2048                 102
+#define IDC_STATIC_TEMPHIGHSCORE        102
 #define IDR_MAINFRAME                   128
 #define g                               1000
 #define IDC_STATIC_SCORE                1001

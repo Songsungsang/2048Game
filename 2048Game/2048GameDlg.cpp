@@ -11,6 +11,7 @@ BEGIN_MESSAGE_MAP(C2048GameDlg, CDialogEx)
     ON_CBN_SELCHANGE(IDC_COMBO_SIZE, &C2048GameDlg::OnCbnSelchangeComboSize)
     ON_BN_CLICKED(IDC_BUTTON_UNDO, &C2048GameDlg::OnBnClickedButtonUndo)  // 되돌리기 버튼 이벤트 추가
    
+    ON_STN_CLICKED(IDC_STATIC_HIGHSCORE, &C2048GameDlg::OnStnClickedStaticHighscore)
 END_MESSAGE_MAP()
 
 C2048GameDlg::C2048GameDlg(CWnd* pParent)
@@ -40,6 +41,7 @@ void C2048GameDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_COMBO_SIZE, m_SizeComboBox);
     DDX_Control(pDX, IDC_BUTTON_UNDO, m_UndoButton);  // 되돌리기 버튼 컨트롤 추가
     DDX_Control(pDX, IDC_STATIC_UNDO_COUNT, m_UndoCountStatic);
+    DDX_Control(pDX, IDC_STATIC_TEMPHIGHSCORE, m_TempHighScoreStatic);
 }
 
 BOOL C2048GameDlg::OnInitDialog()
@@ -83,6 +85,9 @@ BOOL C2048GameDlg::OnInitDialog()
 
     // 되돌리기 횟수 초기화 및 표시
     UpdateUndoCount();
+
+    m_TempHighScore = game.getHighScore();  // 시작 시 기존 최고 점수로 초기화
+    UpdateTempHighScore();
 
     return TRUE;
 }
@@ -264,23 +269,54 @@ BOOL C2048GameDlg::PreTranslateMessage(MSG* pMsg)
     return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-void C2048GameDlg::OnBnClickedButtonNewGame()
-{
-    game.resetGame();
-    UpdateBasic();
-}
+//void C2048GameDlg::OnBnClickedButtonNewGame()
+//{
+//    game.resetGame();
+//    UpdateBasic();
+//}
 
 void C2048GameDlg::UpdateScore()
 {
     CString strScore;
     strScore.Format(_T("점수: %d"), game.getScore());
     m_ScoreStatic.SetWindowText(strScore);
+
+    // 현재 점수가 임시 최고 점수를 넘으면 갱신
+    if (game.getScore() > m_TempHighScore) {
+        m_TempHighScore = game.getScore();
+        UpdateTempHighScore();
+    }
 }
+void C2048GameDlg::UpdateTempHighScore()
+{
+    CString strTempHigh;
+    strTempHigh.Format(_T("세션 최고 점수: %d"), m_TempHighScore);
+    m_TempHighScoreStatic.SetWindowText(strTempHigh);
+}
+
+void C2048GameDlg::OnBnClickedButtonNewGame()
+{
+    // 새 게임 시작 시 세션 최고 점수 초기화
+    m_TempHighScore = 0;
+    UpdateTempHighScore();
+
+    game.resetGame();
+    UpdateBasic();
+}
+
+//// 대화상자가 종료될 때 (프로그램 종료 시)
+//void C2048GameDlg::OnOK()
+//{
+//    // 대화상자 종료 시 세션 최고 점수 초기화
+//    m_TempHighScore = 0;
+//
+//    CDialogEx::OnOK();
+//}
 
 void C2048GameDlg::UpdateHighScore()
 {
     CString strHigh;
-    strHigh.Format(_T("최고 점수: %d"), game.getHighScore());
+    strHigh.Format(_T("역대 최고 점수: %d"), game.getHighScore());
     m_HighScoreStatic.SetWindowText(strHigh);
 }
 
@@ -311,4 +347,8 @@ void C2048GameDlg::UpdateBasic()
     UpdateScore(); // 화면의 숫자와 카운트 초기화
     UpdateUndoCount();
     Invalidate();  // 화면 갱신
+}
+void C2048GameDlg::OnStnClickedStaticHighscore()
+{
+    // TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
