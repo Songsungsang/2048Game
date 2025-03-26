@@ -18,7 +18,7 @@ private:
     int score;
     int highScore;
     int size;
-    int m_TempHighScore;  // 세션 최고 점수 추적용
+    int tempHighScore;  // 세션 최고 점수 추적용
     bool gameOver;
     bool infinite;
     std::random_device rd;
@@ -49,6 +49,8 @@ public:
     bool moveTiles(Direction dir);
     int getTileValue(int row, int col) const;
     int getScore() const;
+    int getTempHighScore() const;
+    void setTempHighScore(int s);
     int getHighScore() const;
     void setHighScore(int s);
     void setInfinite(bool i);

@@ -17,7 +17,6 @@ private:
     CButton m_UndoButton;  // 되돌리기 버튼 추가
     CStatic m_UndoCountStatic;  // 남은 되돌리기 횟수 표시 스태틱
     CStatic m_TempHighScoreStatic;  // 추가
-    int m_TempHighScore;             // 추가
     void UpdateTempHighScore();
 
 public:

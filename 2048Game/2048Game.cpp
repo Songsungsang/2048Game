@@ -163,7 +163,7 @@ void Game2048::saveState() {
     if (history.size() >= maxUndoCount) {
         history.erase(history.begin());
     }
-    history.push_back({ board, score, highScore, m_TempHighScore });  // m_TempHighScore 추가
+    history.push_back({ board, score, highScore, tempHighScore });  // m_TempHighScore 추가
 }
 
 bool Game2048::undoMove() {
@@ -175,8 +175,10 @@ bool Game2048::undoMove() {
     board = state.boardState;
     score = state.scoreState;
     highScore = state.highScoreState;
-    m_TempHighScore = state.tempHighScoreState;  // 세션 최고 점수 복원
+    tempHighScore = state.tempHighScoreState;  // 세션 최고 점수 복원
     remainingUndos--;
+
+    saveHighScore();
 
     return true;
 }
@@ -200,6 +202,14 @@ int Game2048::getTileValue(int row, int col) const {
 
 int Game2048::getScore() const {
     return score;
+}
+
+int Game2048::getTempHighScore() const {
+    return tempHighScore;
+}
+
+void Game2048::setTempHighScore(int s) {
+    tempHighScore = s;
 }
 
 int Game2048::getHighScore() const {

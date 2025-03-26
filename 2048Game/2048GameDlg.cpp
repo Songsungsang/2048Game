@@ -84,7 +84,6 @@ BOOL C2048GameDlg::OnInitDialog()
     // 되돌리기 횟수 초기화 및 표시
     UpdateUndoCount();
 
-    m_TempHighScore = 0;  // 세션 내 최고점수는 0부터 시작
     UpdateTempHighScore();
 
     return TRUE;
@@ -228,6 +227,12 @@ void C2048GameDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         UpdateScore();
         Invalidate();
 
+        if (game.getScore() > game.getTempHighScore()) // 최고 점수 체크 및 갱신
+        {
+            game.setTempHighScore(game.getScore());
+            UpdateTempHighScore();
+        }
+
         if (game.getScore() > game.getHighScore()) // 최고 점수 체크 및 갱신
         {
             game.setHighScore(game.getScore());
@@ -274,15 +279,16 @@ void C2048GameDlg::UpdateScore()
     m_ScoreStatic.SetWindowText(strScore);
 
     // 현재 점수가 임시 최고 점수를 넘으면 갱신
-    if (game.getScore() > m_TempHighScore) {
-        m_TempHighScore = game.getScore();
+    if (game.getScore() > game.getTempHighScore()) {
+        game.setTempHighScore(game.getScore());
         UpdateTempHighScore();
     }
 }
+
 void C2048GameDlg::UpdateTempHighScore()
 {
     CString strTempHigh;
-    strTempHigh.Format(_T("세션 최고 점수: %d"), m_TempHighScore);
+    strTempHigh.Format(_T("세션 최고 점수: %d"), game.getTempHighScore());
     m_TempHighScoreStatic.SetWindowText(strTempHigh);
 }
 
@@ -317,7 +323,6 @@ void C2048GameDlg::OnBnClickedButtonUndo()
     if (game.undoMove())
     {
         // 세션 최고 점수를 이전 값으로 복원
-        m_TempHighScore = game.getScore(); // 이전 점수로 세션 최고 점수 갱신
         UpdateBasic();
         UpdateHighScore();
         UpdateTempHighScore();  // 세션 최고 점수 업데이트 추가
